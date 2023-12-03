@@ -1,14 +1,40 @@
-import http from "http";
+#!/usr/bin/env node
 
-export const server = http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.end(
-    JSON.stringify({
-      data: "It Works!",
-    })
-  );
-});
+import 'dotenv/config';
+import { resolve } from 'path';
 
-server.listen(3000, () => {
-  console.log("Server running");
-});
+const nodePath = resolve(process.argv[1]);
+const isCLI = nodePath === __filename;
+const { NUM } = <{ NUM: string }>process.env;
+
+export class Main {
+  num: number;
+
+  constructor(num: number) {
+    this.num = num;
+  }
+
+  async log() {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    console.log(`Main.log: ${this.num}`);
+    return this.num;
+  }
+
+  throw() {
+    throw new Error(`Main.throw ${this.num}`);
+  }
+}
+export default async function main(num: number): Promise<number> {
+  console.log(`main: ${num}`);
+  return num;
+}
+
+(async () => {
+  if (isCLI) {
+    await main(Number(NUM));
+    const foo = new Main(Number(NUM));
+    await foo.log();
+    // foo.throw();
+    console.log('Done.');
+  }
+})();
