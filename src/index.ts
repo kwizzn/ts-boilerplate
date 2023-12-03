@@ -15,7 +15,7 @@ export class Main {
   }
 
   async log() {
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 50));
     console.log(`Main.log: ${this.num}`);
     return this.num;
   }
@@ -25,6 +25,7 @@ export class Main {
   }
 }
 export default async function main(num: number): Promise<number> {
+  await new Promise(resolve => setTimeout(resolve, 50));
   console.log(`main: ${num}`);
   return num;
 }
