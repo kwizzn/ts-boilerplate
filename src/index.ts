@@ -5,37 +5,28 @@ import { resolve } from 'path';
 
 const nodePath = resolve(process.argv[1]);
 const isCLI = nodePath === __filename;
-const { NUM } = <{ NUM: string }>process.env;
+const { DUMMY } = <{ DUMMY: string }>process.env;
 
-export class Main {
-  num: number;
+export default class Main {
+  dummy: string;
 
-  constructor(num: number) {
-    this.num = num;
+  constructor(dummy: string) {
+    this.dummy = dummy;
   }
 
-  async log() {
-    await new Promise(resolve => setTimeout(resolve, 50));
-    console.log(`Main.log: ${this.num}`);
-    return this.num;
+  log() {
+    return this.dummy;
   }
 
   throw() {
-    throw new Error(`Main.throw ${this.num}`);
+    throw new Error(`error: ${this.dummy}`);
   }
 }
-export default async function main(num: number): Promise<number> {
-  await new Promise(resolve => setTimeout(resolve, 50));
-  console.log(`main: ${num}`);
-  return num;
-}
 
-(async () => {
+(() => {
   if (isCLI) {
-    await main(Number(NUM));
-    const foo = new Main(Number(NUM));
-    await foo.log();
-    // foo.throw();
-    console.log('Done.');
+    const main = new Main(DUMMY);
+    const dummy = main.log(); // main.throw();
+    process.stdout.write(`Done. dummy = ${dummy}\n`);
   }
 })();
